@@ -10,19 +10,4 @@ This is the starting point for building an automated "cut audio below X dB" tool
 - Easy to extend with audio export and analysis logic.
 
 ## Installation
-1. Copy the `MyVolumeCutter` folder into your Adobe CEP extensions folder:
 
-   **Windows**  
-   `C:\Users\<YourUser>\AppData\Roaming\Adobe\CEP\extensions\`
-
-   **macOS**  
-   `~/Library/Application Support/Adobe/CEP/extensions/`
-
-2. Enable unsigned extensions:
-
-   **Windows**  
-   ```sh
-   reg add HKCU\Software\Adobe\CSXS.9 /v PlayerDebugMode /t REG_SZ /d 1 /f
-
-   **macOS** 
-   defaults write com.adobe.CSXS.9 PlayerDebugMode 1
