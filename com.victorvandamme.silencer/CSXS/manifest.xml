@@ -1,21 +1,29 @@
+<!-- Extension manifest — think of it as a passport for your plugin -->
+
 <?xml version="1.0" encoding="UTF-8"?>
+
 <ExtensionManifest ExtensionBundleId="com.victorvandamme.silencer"
                    ExtensionBundleVersion="1.0"
                    Version="7.0"
-                   ExtensionBundleName="Silencer">
+                   ExtensionBundleName="Silencer"> <!--ID, version and display name of plugin-->
+
+  <!--List of extensions in this bundle-->
   <ExtensionList>
     <Extension Id="com.victorvandamme.silencer.panel"/>
   </ExtensionList>
 
+  <!--Where the extension can run-->
   <ExecutionEnvironment>
     <HostList>
       <Host Name="PPRO" Version="12.0"/>
     </HostList>
     <RequiredRuntimeList>
+      <!-- CEP runtime version — 11.0 is the latest for CEP panels -->
       <RequiredRuntime Name="CSXS" Version="11.0"/>
     </RequiredRuntimeList>
   </ExecutionEnvironment>
 
+  <!-- Details for our extension -->
   <DispatchInfoList>
     <DispatchInfo>
       <Resources>
@@ -23,15 +31,15 @@
       </Resources>
 
       <Lifecycle>
-        <AutoVisible>true</AutoVisible>
+        <AutoVisible>true</AutoVisible> <!--opens automatically?-->
       </Lifecycle>
 
       <UI>
-        <Type>Panel</Type>
+        <Type>Panel</Type> <!--Will be a dockable panel-->
       </UI>
 
       <CEFCommandLine>
-        <!-- allow node usage inside the panel -->
+        <!-- allow node.js usage inside the panel -->
         <Parameter>--enable-nodejs</Parameter>
       </CEFCommandLine>
     </DispatchInfo>
