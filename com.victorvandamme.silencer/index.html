@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html>
 <head>
   <meta charset="utf-8" />
@@ -8,13 +9,16 @@
 </head>
 <body>
   <div id="app">
+
     <h3>Silencer</h3>
-    <label>Silence threshold (dBFS): <span id="thrValue">-40</span></label>
-    <input id="threshold" type="range" min="-80" max="-10" value="-40"/>
-    <label>Min silence (ms)</label>
-    <input id="minSilence" type="number" value="500"/>
-    <button id="analyzeBtn">Analyze & Mark Silence</button>
+  
+    <label>Silence threshold (dBFS): <span id="thrValue">-40</span></label><br>
+    <input id="threshold" type="range" min="-80" max="-10" value="-40"/> <br>
+    <label>Min silence (ms)</label> <br>
+    <input id="minSilence" type="number" value="500"/> <br>
+    <button id="analyzeBtn">Analyze & Mark Silence</button> <br>
     <pre id="status"></pre>
+
   </div>
 
   <script src="js/csinterface.js"></script>
