@@ -3,7 +3,7 @@ const csInterface = new CSInterface();
 const status = document.getElementById('status');
 
 //Update decibel threshold value
-document.getElementById('threshold').addEventListener('input', e => {
+document.getElementById('threshold').addEventListener('input', e =>{
   document.getElementById('thrValue').textContent = e.target.value;
 });
 
