@@ -1,9 +1,9 @@
-// Initialize CSInterface and get status <pre> element
+// Initialize CSInterface (Adobe's "bridge" object to connect with ExtendScript) and get status <pre> element
 const csInterface = new CSInterface();
 const status = document.getElementById('status');
 
 //Update decibel threshold value
-document.getElementById('threshold').addEventListener('input', e =>{
+document.getElementById('threshold').addEventListener('input', (e)=>{
   document.getElementById('thrValue').textContent = e.target.value;
 });
 
@@ -49,7 +49,7 @@ function runPythonAnalyze(wavPath, thresholdDb, minSilenceMs) {
       const py = 'python';
       const script = csInterface.getSystemPath(SystemPath.EXTENSION) + '/server/silence_detect.py';
       const args = [script, wavPath, thresholdDb.toString(), minSilenceMs.toString()];
-      const p = cp.spawn(py, args, { windowsHide: true });
+      const p = cp.spawn(py, args);
 
       let out = '', err = '';
       p.stdout.on('data', d => out += d.toString());
