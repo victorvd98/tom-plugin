@@ -32,28 +32,16 @@ function exportSequenceAudio() {
    jsonRanges: array of {start: <seconds>, end: <seconds>}
    returns "OK" or error text.
 */
-function insertSilenceMarkers(jsonRanges) {
-  try {
-    var ranges = (typeof jsonRanges === 'string') ? JSON.parse(jsonRanges) : jsonRanges;
+function removeSilence(ranges) {
     var seq = app.project.activeSequence;
-    if (!seq) return "ERR:NO_SEQ";
-
-    var markers = seq.markers;
-
-    for (var i = 0; i < ranges.length; i++) {
-      var r = ranges[i];
-      var startSec = r.start;
-      var endSec = r.end;
-      // create a comment marker at the start time, and set its end/duration
-      var m = markers.createMarker(startSec);
-      if (m) {
-        m.comments = "Auto-silence";
-        // set duration: marker has an 'end' property accessible (time object)
-        try { m.end = endSec; } catch (e) { /* some builds vary; ignore */ }
-      }
+    var track = seq.audioTracks[0]; 
+    for (var i = ranges.length - 1; i >= 0; i--) { // reverse to avoid messing up indices
+        var start = ranges[i].start;
+        var end = ranges[i].end;
+        track.setInPoint(start);
+        track.setOutPoint(end);
+        track.deleteClip();
     }
-    return "OK";
-  } catch (e) {
-    return "ERR:" + e.toString();
-  }
+    return "Removed " + ranges.length + " silent sections";
 }
+

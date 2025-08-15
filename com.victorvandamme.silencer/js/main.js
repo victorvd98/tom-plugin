@@ -26,7 +26,7 @@ document.getElementById('analyzeBtn').addEventListener('click', async ()=>{
     status.textContent = 'Found ranges: ' + rangesJson;
 
     // 3) Tell ExtendScript to create markers
-    const resp = await evalScriptPromise(`insertSilenceMarkers(${JSON.stringify(rangesJson)})`);
+    const resp = await evalScriptPromise(`removeSilence(${JSON.stringify(rangesJson)})`);
     status.textContent = 'Markers inserted: ' + resp;
   } catch (err) {
     status.textContent = 'Error: ' + err;
