@@ -1,47 +1,55 @@
-<!-- Extension manifest — think of it as a passport for your plugin -->
-
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ExtensionManifest ExtensionBundleId="com.victorvandamme.silencer"
                    ExtensionBundleVersion="1.0"
                    Version="7.0"
-                   ExtensionBundleName="Silencer"> <!--ID, version and display name of plugin-->
+                   ExtensionBundleName="Silencer">
 
-  <!--List of extensions in this bundle-->
   <ExtensionList>
     <Extension Id="com.victorvandamme.silencer.panel"/>
   </ExtensionList>
 
-  <!--Where the extension can run-->
   <ExecutionEnvironment>
     <HostList>
-      <Host Name="PPRO" Version="12.0"/>
+      <!-- Support Premiere Pro from 12.0 to future -->
+      <Host Name="PPRO" Version="[12.0,99.9]"/>
     </HostList>
     <RequiredRuntimeList>
-      <!-- CEP runtime version — 11.0 is the latest for CEP panels -->
+      <!-- Use CEP 11 -->
       <RequiredRuntime Name="CSXS" Version="11.0"/>
     </RequiredRuntimeList>
   </ExecutionEnvironment>
 
-  <!-- Details for our extension -->
   <DispatchInfoList>
-    <DispatchInfo>
+    <DispatchInfo Extension="com.victorvandamme.silencer.panel">
       <Resources>
         <MainPath>./index.html</MainPath>
       </Resources>
-
       <Lifecycle>
-        <AutoVisible>true</AutoVisible> <!--opens automatically?-->
+        <AutoVisible>true</AutoVisible>
       </Lifecycle>
-
       <UI>
-        <Type>Panel</Type> <!--Will be a dockable panel-->
+        <Type>Panel</Type>
+        <Menu>Silencer</Menu>
+        <Geometry>
+          <Size>
+            <Height>300</Height>
+            <Width>400</Width>
+          </Size>
+          <MinSize>
+            <Height>200</Height>
+            <Width>200</Width>
+          </MinSize>
+          <MaxSize>
+            <Height>2000</Height>
+            <Width>2000</Width>
+          </MaxSize>
+        </Geometry>
       </UI>
-
       <CEFCommandLine>
-        <!-- allow node.js usage inside the panel -->
         <Parameter>--enable-nodejs</Parameter>
       </CEFCommandLine>
     </DispatchInfo>
   </DispatchInfoList>
+
 </ExtensionManifest>
