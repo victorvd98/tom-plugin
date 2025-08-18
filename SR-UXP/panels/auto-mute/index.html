@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SR-UXP AutoMute</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>SR-UXP AutoMute</h1>
+
+        <!-- Selected Clip / Track Display -->
+        <div class="control-group">
+            <label>Selected Clip / Track:</label>
+            <span id="selectedClip">No clip selected</span>
+        </div>
+
+        <!-- Silence Threshold -->
+        <div class="control-group">
+            <label for="thresholdInput">
+                Silence Threshold (dBFS):
+                <span id="thresholdValue">-40</span> dB
+            </label>
+            <input type="range" id="thresholdInput" min="-100" max="0" step="1" value="-40">
+        </div>
+
+        <!-- Minimum Duration -->
+        <div class="control-group">
+            <label for="minDurationInput">Minimum Silence Duration (ms):</label>
+            <input type="number" id="minDurationInput" value="200" min="50">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button id="analyzeBtn">Analyze</button>
+            <button id="applyBtn" disabled>Apply Mutes</button>
+        </div>
+
+        <!-- Results / Status -->
+        <div id="status" class="status">Select a clip in Premiere and click Analyze.</div>
+
+        <!-- Optional: Display detected mute ranges -->
+        <ul id="muteRanges" class="mute-ranges"></ul>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>

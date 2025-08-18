@@ -1,0 +1,38 @@
+{
+    "manifestVersion": 5,
+    "id": "com.sruxp.automute",
+    "name": "SR-UXP AutoMute",
+    "version": "1.0.0",
+    "host": {
+        "app": "PremierePro",
+        "minVersion": "24.0.0"
+    },
+    "entryPoints": [
+        {
+            "type": "panel",
+            "id": "sruxp-auto-mute-panel",
+            "label": "Auto Mute",
+            "icon": "icons/icon.png",
+            "mainPath": "panels/auto-mute/index.html",
+            "minimumSize": {
+                "width": 300,
+                "height": 200
+            },
+            "maximumSize": {
+                "width": 1600,
+                "height": 1200
+            }
+        }
+    ],
+    "runtime": {
+        "requires": {
+            "premiere": {
+                "version": "24.0.0"
+            }
+        }
+    },
+    "permissions": {
+        "filesystem": "fullAccess",
+        "network": "local"
+    }
+}
