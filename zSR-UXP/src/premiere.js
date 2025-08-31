@@ -1,54 +1,58 @@
-// Premiere UXP APIs
 import { app } from 'uxp';
 
-export async function getActiveSequence() {
+/**
+ * Get the currently selected audio clip in the active sequence.
+ * @returns {Promise<Object|null>} - Returns clip object or null if none selected
+ */
+export async function getSelectedClip() {
   const sequences = await app.project.sequences;
-  if (!sequences || sequences.length === 0) return null; // OR (||) logical operator
-  return sequences.find(seq => seq.isActive) || null;
+  if (!sequences || sequences.length === 0) return null;
+
+  const activeSequence = sequences.find(seq => seq.isActive);
+  if (!activeSequence) return null;
+
+  // Find first targeted audio track with a selected clip
+  const audioTrack = activeSequence.audioTracks.find(track => track.isTargeted);
+  if (!audioTrack) return null;
+
+  const selectedClip = audioTrack.clips.find(c => c.isSelected);
+  return selectedClip || null;
 }
 
 /**
- * Cut and mute silence ranges in the given clip.
- * @param {Object} clip - The audio clip object from Premiere.
- * @param {Array} silences - Array of { start: number, end: number } in seconds.
+ * Cut and mute given silence segments in the clip.
+ * @param {Object} clip - Premiere audio clip object
+ * @param {Array<{start:number,end:number}>} silences - silent segments in seconds
  */
 export async function cutAndMuteSilences(clip, silences) {
   if (!clip || !silences || silences.length === 0) return;
 
   const track = clip.parentTrack;
-  if (!track) throw new Error('Could not find track for clip.');
+  if (!track) throw new Error('Cannot find parent track for clip.');
 
-  // Sort silence segments in reverse so we cut from the end
-  // (avoids messing up time positions when cutting)
+  // Sort silences in reverse to avoid time shift issues
   silences.sort((a, b) => b.start - a.start);
 
   for (const silence of silences) {
-    const { start, end } = silence;
-
-    // Make sure silence is within clip duration
     const clipStart = clip.start.seconds;
     const clipEnd = clip.end.seconds;
+    const startTime = Math.max(silence.start, clipStart);
+    const endTime = Math.min(silence.end, clipEnd);
 
-    if (end <= clipStart || start >= clipEnd) continue;
-
-    const cutStart = Math.max(start, clipStart);
-    const cutEnd = Math.min(end, clipEnd);
+    if (startTime >= endTime) continue;
 
     try {
-      // Add edit points
-      await track.addEditAt(cutStart);
-      await track.addEditAt(cutEnd);
+      // Add edit points at start and end
+      await track.addEditAt(startTime);
+      await track.addEditAt(endTime);
 
-      // After splitting, find the segment that corresponds to silence and mute it
-      const newClips = track.clips.filter(c =>
-        c.start.seconds >= cutStart && c.end.seconds <= cutEnd
-      );
-
+      // Find new clip segment corresponding to the silence
+      const newClips = track.clips.filter(c => c.start.seconds >= startTime && c.end.seconds <= endTime);
       for (const silentClip of newClips) {
         silentClip.setMute(true);
       }
     } catch (err) {
-      console.error(`Error cutting silence at ${start}-${end}:`, err);
+      console.error(`Failed to mute silence ${startTime}-${endTime}:`, err);
     }
   }
 }

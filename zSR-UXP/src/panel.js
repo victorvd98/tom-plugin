@@ -1,53 +1,73 @@
+import * as UI from './ui.js';
 import { analyzeAudio } from './audioAnalysis.js';
-import { getActiveSequence, cutAndMuteSilences } from './premiere.js';
+import { getSelectedClip, cutAndMuteSilences } from './premiere.js';
 
-const analyzeBtn = document.getElementById('analyzeBtn');
-const thresholdInput = document.getElementById('threshold');
-const durationInput = document.getElementById('minDuration');
-const statusEl = document.getElementById('status');
+let targetClip = null;
+let detectedSilences = [];
 
-analyzeBtn.addEventListener('click', async () => {
-  try {
-    statusEl.textContent = 'Analyzing audio...';
+/**
+ * Initializes the panel.
+ * Sets up UI events and default state.
+ */
+export function initPanel() {
+  UI.init();
 
-    const threshold = parseFloat(thresholdInput.value);
-    const minDuration = parseInt(durationInput.value, 10);
+  // Analyze button
+  UI.onAnalyzeClick(async () => {
+    UI.clearMuteRanges();
+    UI.setStatus('Checking selection...');
+    targetClip = await getSelectedClip();
 
-    const sequence = await getActiveSequence();
-    if (!sequence) {
-      statusEl.textContent = 'No active sequence found!';
+    if (!targetClip) {
+      UI.setStatus('No audio clip selected. Please select a clip.');
+      UI.setSelectedClip('No clip selected');
+      UI.disableApply();
       return;
     }
 
-    // For now, we’ll assume the first selected audio track
-    const selectedTrack = sequence.audioTracks.find(track => track.isTargeted);
-    if (!selectedTrack) {
-      statusEl.textContent = 'Select an audio track first.';
-      return;
+    UI.setSelectedClip(targetClip.name);
+    UI.setStatus('Analyzing audio...');
+
+    const threshold = UI.getThreshold();
+    const minDuration = UI.getMinDuration();
+
+    try {
+      detectedSilences = await analyzeAudio(targetClip, threshold, minDuration);
+
+      if (detectedSilences.length === 0) {
+        UI.setStatus('No silences detected.');
+        UI.disableApply();
+        return;
+      }
+
+      // Display detected ranges
+      detectedSilences.forEach(({ start, end }) => {
+        UI.addMuteRange(start, end);
+      });
+
+      UI.setStatus(`Found ${detectedSilences.length} silences. Ready to apply.`);
+      UI.enableApply();
+    } catch (err) {
+      console.error(err);
+      UI.setStatus('Error during analysis: ' + err.message);
     }
+  });
 
-    // Extract samples or reference
-    const audioClip = selectedTrack.clips[0];
-    if (!audioClip) {
-      statusEl.textContent = 'No clips on this track.';
-      return;
+  // Apply button
+  UI.onApplyClick(async () => {
+    if (!targetClip || detectedSilences.length === 0) return;
+
+    UI.setStatus('Applying mutes...');
+    try {
+      await cutAndMuteSilences(targetClip, detectedSilences);
+      UI.setStatus('Mutes applied successfully!');
+      UI.disableApply();
+    } catch (err) {
+      console.error(err);
+      UI.setStatus('Error applying mutes: ' + err.message);
     }
+  });
+}
 
-    // Step 1: Analyze audio
-    const silences = await analyzeAudio(audioClip, threshold, minDuration);
-    if (silences.length === 0) {
-      statusEl.textContent = 'No silences detected.';
-      return;
-    }
-
-    statusEl.textContent = `Found ${silences.length} silent segments. Cutting...`;
-
-    // Step 2: Apply cuts/mutes in Premiere
-    await cutAndMuteSilences(audioClip, silences);
-
-    statusEl.textContent = 'Done! Silences cut.';
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = 'Error: ' + err.message;
-  }
-});
+// Initialize panel when module is loaded
+initPanel();
