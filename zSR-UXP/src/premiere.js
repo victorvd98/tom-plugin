@@ -3,7 +3,7 @@ import { app } from 'uxp';
 
 export async function getActiveSequence() {
   const sequences = await app.project.sequences;
-  if (!sequences || sequences.length === 0) return null;
+  if (!sequences || sequences.length === 0) return null; // OR (||) logical operator
   return sequences.find(seq => seq.isActive) || null;
 }
 
