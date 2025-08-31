@@ -1,0 +1,29 @@
+{
+  "manifestVersion": 5,
+  "id": "com.example.silenceMuter",
+  "name": "Silence Muter",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "description": "Analyze an audio track, detect silences, and mute them in the timeline.",
+  "host": {
+    "app": "PPRO",
+    "minVersion": "24.0.0"
+  },
+  "entryPoints": [
+    {
+      "type": "panel",
+      "id": "silenceMuterPanel",
+      "label": "Silence Muter",
+      "icon": "assets/icon-dark.png",
+      "mainPath": "index.html",
+      "size": {
+        "width": 300,
+        "height": 400
+      },
+      "minimumSize": {
+        "width": 250,
+        "height": 300
+      }
+    }
+  ]
+}
