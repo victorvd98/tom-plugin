@@ -6,8 +6,8 @@
   "author": "Victor Van Damme",
   "description": "Analyze an audio track, detect silences, and cut them in the timeline.",
   "host": {
-    "app": "PPRO",
-    "minVersion": "24.0.0"
+    "app": "premierepro",
+    "minVersion": "25"
   },
   "entryPoints": [
     {
